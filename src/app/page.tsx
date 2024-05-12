@@ -9,12 +9,12 @@ export default async function Home() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { data: albums, error: albumsError } = await supabase.from("albums")
+  const { data: albums, error: albumsError } = await supabase.from("album")
     .select(`
       id,
       title,
       release_date,
-      artworks (
+      artwork (
         url,
         width,
         height,
@@ -33,13 +33,12 @@ export default async function Home() {
           <Link href={`/album/${album.id}`}>
             {/* TODO: image src: handle null */}
             <Image
-              src={album.artworks?.url!}
+              src={album.artwork?.url!}
               alt={`${album.title}${
-                album.artworks?.description &&
-                " - " + album.artworks.description
+                album.artwork?.description && " - " + album.artwork.description
               }`}
-              width={album.artworks?.width}
-              height={album.artworks?.height}
+              width={album.artwork?.width}
+              height={album.artwork?.height}
               className="h-auto max-w-full object-cover sm:max-h-[150px] sm:max-w-[200px]"
               sizes={`
                 (max-width: 375px) 310px,
