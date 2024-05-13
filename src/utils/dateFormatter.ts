@@ -1,6 +1,6 @@
 import { Database } from "@/types/supabase";
 
-type DB_Date = Database["public"]["Tables"]["albums"]["Row"]["release_date"]; // all dates are the same type (string | null)
+type DB_Date = Database["public"]["Tables"]["album"]["Row"]["release_date"]; // all dates are the same type (string | null)
 
 interface Options {
   output: "year" | "YYYY-MM-DD" | "DD-MM-YYYY";

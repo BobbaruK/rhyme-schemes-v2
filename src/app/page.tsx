@@ -43,7 +43,6 @@ export default async function Home() {
           className="flex flex-col items-center justify-start overflow-hidden text-center sm:flex-row sm:text-start"
         >
           <Link href={`/album/${album.id}`} className="grow sm:max-w-[200px]">
-            {/* TODO: image src: handle null */}
             <Image
               src={album.artwork?.url || noImage}
               alt={`${album.title}${
@@ -51,7 +50,7 @@ export default async function Home() {
               }`}
               width={album.artwork?.width}
               height={album.artwork?.height}
-              className=" block h-auto w-full max-w-full object-cover sm:max-h-[150px] sm:max-w-[200px]"
+              className=" block h-auto w-full max-w-full object-cover sm:h-[200px] sm:w-[200px]"
               sizes={`
                 (max-width: 375px) 310px,
                 (max-width: 639px) 574px,
