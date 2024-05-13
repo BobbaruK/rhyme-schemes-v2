@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../styles/globals.css";
 import Link from "next/link";
+import MainDeck from "@/components/deck/MainDeck";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,13 +18,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={`${inter.className} grid-rows-layout grid min-h-[100vh]`}
+      >
         <header>
           <div className="container py-4">
             <Link href="/">Home</Link>
           </div>
         </header>
-        {children}
+        <main>{children}</main>
+        <footer>
+          <div className="container">footer</div>
+        </footer>
+        <MainDeck />
       </body>
     </html>
   );
