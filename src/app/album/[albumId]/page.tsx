@@ -3,6 +3,8 @@ import AlertWrapper from "@/components/AlertWrapper";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import { DeckState } from "@/stores/deck-store";
+import Play from "@/components/deck/Play";
 
 interface Props {
   params: {
@@ -14,60 +16,97 @@ const Album = async ({ params: { albumId } }: Props) => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { data: albums, error: albumsError } = await supabase
+  const { data: album, error: albumsError } = await supabase
     .from("album")
     .select(
       `
-        title,
-        release_date,
-        band (
-          id,
-          name
-        ),
-        artist (
-          id,
-          name
-        ),
-        artwork (*)
-      `,
+      *,
+      artist (*),
+      artwork (*)`,
     )
-    .eq("id", albumId);
+    .eq("id", albumId)
+    .single();
 
-  const { data: songs, error: songsError } = await supabase
+  const { data: albumSongs, error: albumSongsError } = await supabase
     .from("song")
-    .select(`*`)
+    .select(
+      `
+      *,
+      artist (*),
+      album (
+        *,
+        artwork (*)
+      )`,
+    )
     .eq("album_id", albumId)
-    .order("track_no", { ascending: true, nullsFirst: true });
+    .order("track_no", { ascending: true, nullsFirst: false });
 
   if (albumsError) return <AlertWrapper error={albumsError} />;
-  if (songsError) return <AlertWrapper error={songsError} />;
+  if (albumSongsError) return <AlertWrapper error={albumSongsError} />;
 
-  const album = albums[0]; //we filter by id and the id is unique
+  const { data: playlistRestRandom, error: playlistRestRandomError } =
+    await supabase
+      .from("random_songs")
+      .select(
+        `
+        *,
+        artist (*),
+        album (
+          *,
+          artwork (*)
+        )`,
+      )
+      .neq("album_id", albumSongs[0].album_id);
+
+  if (playlistRestRandomError)
+    return <AlertWrapper error={playlistRestRandomError} />;
+
+  const playlist = [
+    ...albumSongs,
+    ...playlistRestRandom,
+  ] as DeckState["playlist"];
 
   return (
     <div className="container flex flex-col gap-10">
       {/* <div>
-      <pre>{JSON.stringify(album, null, 4)}</pre>
-    </div> */}
+        <pre>{JSON.stringify(albumSongs, null, 4)}</pre>
+      </div> */}
       <AlbumSongHero
+        playlist={playlist}
+        dataType={"album"}
+        artwork={album.artwork}
+        name={album.title}
+        artist={album.artist!}
+        release_date={album.release_date}
+        songsLength={albumSongs.length}
+        album={null}
+        trackId={albumSongs[0].id}
+        playBtn={
+          <Play
+            songDetails={{
+              id: albumSongs[0].id,
+              songArtist: albumSongs[0].artist
+                ? albumSongs[0].artist.name
+                : "No Name",
+              songName: albumSongs[0].name,
+            }}
+            playlist={playlist}
+          />
+        }
+      />
+      {/* <AlbumSongHero
         opts={{
           dataType: "album",
-          artwork: {
-            url: album.artwork?.url,
-            title: album.title,
-            width: album.artwork?.width,
-            height: album.artwork?.height,
-            description: album.artwork?.description,
-          },
+          artwork: album.artwork,
           name: album.title,
-          band: album.band,
           artist: album.artist,
           release_date: album.release_date,
-          songsLength: songs.length,
+          songsLength: albumSongs.length,
         }}
-      />
+        playlist={playlist}
+      /> */}
       <div className="flex flex-col gap-4">
-        {songs.map((song) => (
+        {albumSongs.map((song) => (
           <div key={song.id}>
             <Link href={`/track/${song.id}`} className="flex  gap-2">
               <span className="w-8 text-end">
