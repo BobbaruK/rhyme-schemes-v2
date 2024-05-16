@@ -1,19 +1,24 @@
 import { Database, Tables } from "@/types/supabase";
 import { createStore } from "zustand/vanilla";
 
-type RandomSongs = Tables<"random_songs"> & {
+export type RandomSong = Tables<"random_songs"> & {
   artist: Tables<"artist">;
   album: (Tables<"album"> & { artwork: Tables<"artwork"> }) | null;
+  url: Database["public"]["Tables"]["song"]["Row"]["url"];
 };
+
+export interface SongDetails {
+  id: Database["public"]["Tables"]["song"]["Row"]["id"];
+  songName: Database["public"]["Tables"]["song"]["Row"]["name"];
+  songArtist: Database["public"]["Tables"]["artist"]["Row"]["name"];
+  url: Database["public"]["Tables"]["song"]["Row"]["url"];
+  songArtwork: Tables<"artwork">;
+}
 
 export type DeckState = {
   trackId: string | null;
-  songDetails: {
-    id: Database["public"]["Tables"]["song"]["Row"]["id"];
-    songName: Database["public"]["Tables"]["song"]["Row"]["name"];
-    songArtist: Database["public"]["Tables"]["artist"]["Row"]["name"];
-  } | null;
-  playlist: RandomSongs[] | null;
+  songDetails: SongDetails | null;
+  playlist: RandomSong[] | null;
 };
 
 export type DeckActions = {

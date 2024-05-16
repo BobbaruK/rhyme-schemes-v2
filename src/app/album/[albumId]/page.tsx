@@ -89,6 +89,8 @@ const Album = async ({ params: { albumId } }: Props) => {
                 ? albumSongs[0].artist.name
                 : "No Name",
               songName: albumSongs[0].name,
+              url: albumSongs[0].url,
+              songArtwork: albumSongs[0].album?.artwork!,
             }}
             playlist={playlist}
           />

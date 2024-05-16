@@ -119,6 +119,7 @@ export type Database = {
           name: string
           rhymes: Json | null
           track_no: number | null
+          url: string
         }
         Insert: {
           album_id?: string | null
@@ -128,6 +129,7 @@ export type Database = {
           name: string
           rhymes?: Json | null
           track_no?: number | null
+          url?: string
         }
         Update: {
           album_id?: string | null
@@ -137,6 +139,7 @@ export type Database = {
           name?: string
           rhymes?: Json | null
           track_no?: number | null
+          url?: string
         }
         Relationships: [
           {

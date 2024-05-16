@@ -3,7 +3,6 @@ import Play from "@/components/deck/Play";
 import AlbumSongHero from "@/components/hero/AlbumSongHero";
 import { DeckState } from "@/stores/deck-store";
 import { createClient } from "@/utils/supabase/server";
-import { QueryData } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 interface Props {
@@ -89,6 +88,8 @@ const Track = async ({ params: { trackId } }: Props) => {
               id: song.id,
               songArtist: song.artist ? song.artist.name : "No Name",
               songName: song.name,
+              url: song.url,
+              songArtwork: song.album?.artwork!,
             }}
             playlist={playlist}
           />
