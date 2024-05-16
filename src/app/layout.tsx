@@ -1,8 +1,9 @@
+import MainDeck from "@/components/deck/MainDeck";
+import { DeckStoreProvider } from "@/stores/deck-store-provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "../styles/globals.css";
 import Link from "next/link";
-import MainDeck from "@/components/deck/MainDeck";
+import "../styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,18 +20,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} grid-rows-layout grid min-h-[100vh]`}
+        className={`${inter.className} grid min-h-[100vh] grid-rows-layout`}
       >
-        <header>
-          <div className="container py-4">
-            <Link href="/">Home</Link>
-          </div>
-        </header>
-        <main>{children}</main>
-        <footer>
-          <div className="container">footer</div>
-        </footer>
-        <MainDeck />
+        <DeckStoreProvider>
+          <header>
+            <div className="container py-4">
+              <Link href="/">Home</Link>
+            </div>
+          </header>
+          <main>{children}</main>
+          <footer>
+            <div className="container">footer</div>
+          </footer>
+          <MainDeck />
+        </DeckStoreProvider>
       </body>
     </html>
   );
